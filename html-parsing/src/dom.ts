@@ -1,34 +1,32 @@
-interface WangdoNodeType {
+export interface WangdoNodeType {
   children: WangdoNodeType[];
   nodeType: NodeType;
 }
 
 interface ElementDataType {
   tagName: string;
-  attributes: AttrMap;
+  attributes: object;
 }
 
 type NodeType = string | ElementDataType;
-
-type AttrMap = Map<string, string>;
 
 function WangdoNode(param: WangdoNodeType) {
   this.children = param.children;
   this.nodeType = param.nodeType;
 }
 
-function ElementData(tagName: string, attributes: AttrMap) {
+function ElementData(tagName: string, attributes: object) {
   this.tagName = tagName;
   this.attributes = attributes;
 }
 
-function createText(data: string) {
+export function createText(data: string) {
   return new WangdoNode({ children: [], nodeType: data });
 }
 
-function createElement(
+export function createElement(
   name: string,
-  attrs: AttrMap,
+  attrs: object,
   children: WangdoNodeType["children"]
 ) {
   return new WangdoNode({
