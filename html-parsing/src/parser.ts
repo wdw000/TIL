@@ -61,10 +61,48 @@ function Parser(pos: Number, input: string) {
   };
 
   this.parseTagName = () => {
-    const reg = /[a-zA-Z0-9]/g;
+    const numberArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+    const lowerAlpha = [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n",
+      "o",
+      "p",
+      "q",
+      "r",
+      "s",
+      "t",
+      "u",
+      "v",
+      "w",
+      "x",
+      "y",
+      "z",
+    ];
+    const upperAlpha = lowerAlpha.map((char) => {
+      return char.toUpperCase();
+    });
 
-    return this.consumeWhile((char: string) => {
-      return reg.test(char);
+    return this.consumeWhile(function (char: string) {
+      if (
+        numberArray.indexOf(parseInt(char)) !== -1 ||
+        lowerAlpha.indexOf(char) !== -1 ||
+        upperAlpha.indexOf(char) !== -1
+      ) {
+        return true;
+      }
+      return false;
     });
   };
 
@@ -98,7 +136,7 @@ function Parser(pos: Number, input: string) {
 
     const children = this.parseNodes();
 
-    console.assert(this.consumeChar === "<", "char is not <");
+    console.assert(this.consumeChar() === "<", "char is not <");
     console.assert(this.consumeChar() === "/", "char is not /");
     console.assert(
       this.parseTagName() === tagName,
@@ -125,7 +163,7 @@ function Parser(pos: Number, input: string) {
   this.parseAttrValue = () => {
     const openQuote = this.consumeChar();
 
-    console.assert(openQuote === '"' || openQuote === "'", "open quote error");
+    console.assert(openQuote === '"', "open quote error");
 
     const value = this.consumeWhile((char: string) => {
       if (char !== openQuote) {
@@ -174,11 +212,11 @@ function Parser(pos: Number, input: string) {
 
     if (nodes.length === 1) return nodes.pop();
 
-    return createElement("html", new Map<string, string>(), nodes);
+    return createElement("html", {}, nodes);
   };
 }
 
 const html = `<html><body><h1>Title</h1><div id="main" class="test"><p>Hello<em>world</em>!</p></div></body></html>`;
 const parser = new Parser(0, html);
 
-console.log(parser);
+console.log(parser.parse());

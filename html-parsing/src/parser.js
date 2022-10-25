@@ -50,9 +50,47 @@ function Parser(pos, input) {
     });
   };
   this.parseTagName = () => {
-    const reg = /[a-zA-Z0-9]/g;
-    return this.consumeWhile((char) => {
-      return reg.test(char);
+    const numberArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+    const lowerAlpha = [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n",
+      "o",
+      "p",
+      "q",
+      "r",
+      "s",
+      "t",
+      "u",
+      "v",
+      "w",
+      "x",
+      "y",
+      "z",
+    ];
+    const upperAlpha = lowerAlpha.map((char) => {
+      return char.toUpperCase();
+    });
+    return this.consumeWhile(function (char) {
+      if (
+        numberArray.indexOf(parseInt(char)) !== -1 ||
+        lowerAlpha.indexOf(char) !== -1 ||
+        upperAlpha.indexOf(char) !== -1
+      ) {
+        return true;
+      }
+      return false;
     });
   };
   this.parseNode = () => {
@@ -77,7 +115,7 @@ function Parser(pos, input) {
     const attrs = this.parseAttributes();
     console.assert(this.consumeChar() === ">", "char is not >");
     const children = this.parseNodes();
-    console.assert(this.consumeChar === "<", "char is not <");
+    console.assert(this.consumeChar() === "<", "char is not <");
     console.assert(this.consumeChar() === "/", "char is not /");
     console.assert(
       this.parseTagName() === tagName,
@@ -97,7 +135,7 @@ function Parser(pos, input) {
   };
   this.parseAttrValue = () => {
     const openQuote = this.consumeChar();
-    console.assert(openQuote === '"' || openQuote === "'", "open quote error");
+    console.assert(openQuote === '"', "open quote error");
     const value = this.consumeWhile((char) => {
       if (char !== openQuote) {
         return true;
@@ -129,9 +167,10 @@ function Parser(pos, input) {
   this.parse = () => {
     const nodes = this.parseNodes();
     if (nodes.length === 1) return nodes.pop();
-    return (0, dom_1.createElement)("html", new Map(), nodes);
+    return (0, dom_1.createElement)("html", {}, nodes);
   };
 }
-const html = `<html><body><h1>Title</h1><div><p>Hello<em>world</em>!</p></div></body></html>`;
+const html = `<html><body><h1>Title</h1><div id="main" class="test"><p>Hello<em>world</em>!</p></div></body></html>`;
 const parser = new Parser(0, html);
-console.log(parser.parse());
+const root = parser.parse();
+console.log(root);
