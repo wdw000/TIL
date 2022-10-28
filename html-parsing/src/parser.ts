@@ -1,4 +1,5 @@
 import { createElement, createText, WangdoNodeType } from "./dom";
+import assert from "node:assert";
 
 function Parser(pos: Number, input: string) {
   this.pos = pos;
@@ -61,48 +62,10 @@ function Parser(pos: Number, input: string) {
   };
 
   this.parseTagName = () => {
-    const numberArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
-    const lowerAlpha = [
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f",
-      "g",
-      "h",
-      "i",
-      "j",
-      "k",
-      "l",
-      "m",
-      "n",
-      "o",
-      "p",
-      "q",
-      "r",
-      "s",
-      "t",
-      "u",
-      "v",
-      "w",
-      "x",
-      "y",
-      "z",
-    ];
-    const upperAlpha = lowerAlpha.map((char) => {
-      return char.toUpperCase();
-    });
+    const reg = /[a-zA-Z0-9]/;
 
-    return this.consumeWhile(function (char: string) {
-      if (
-        numberArray.indexOf(parseInt(char)) !== -1 ||
-        lowerAlpha.indexOf(char) !== -1 ||
-        upperAlpha.indexOf(char) !== -1
-      ) {
-        return true;
-      }
-      return false;
+    return this.consumeWhile((char: string) => {
+      return reg.test(char);
     });
   };
 
@@ -127,22 +90,22 @@ function Parser(pos: Number, input: string) {
   };
 
   this.parseElement = () => {
-    console.assert(this.consumeChar() === "<", "char is not <");
+    assert(this.consumeChar() === "<", "char is not <");
 
     const tagName = this.parseTagName();
     const attrs = this.parseAttributes();
 
-    console.assert(this.consumeChar() === ">", "char is not >");
+    assert(this.consumeChar() === ">", "char is not >");
 
     const children = this.parseNodes();
 
-    console.assert(this.consumeChar() === "<", "char is not <");
-    console.assert(this.consumeChar() === "/", "char is not /");
-    console.assert(
+    assert(this.consumeChar() === "<", "char is not <");
+    assert(this.consumeChar() === "/", "char is not /");
+    assert(
       this.parseTagName() === tagName,
       "There is no tage name in closing tag"
     );
-    console.assert(this.consumeChar() === ">", "char is not >");
+    assert(this.consumeChar() === ">", "char is not >");
 
     return createElement(tagName, attrs, children);
   };
@@ -150,7 +113,7 @@ function Parser(pos: Number, input: string) {
   this.parseAttr = () => {
     const name = this.parseTagName();
 
-    console.assert(
+    assert(
       this.consumeChar() === "=",
       "there is no '=' between attribute name and attribute value"
     );
@@ -163,7 +126,7 @@ function Parser(pos: Number, input: string) {
   this.parseAttrValue = () => {
     const openQuote = this.consumeChar();
 
-    console.assert(openQuote === '"', "open quote error");
+    assert(openQuote === '"', "open quote error");
 
     const value = this.consumeWhile((char: string) => {
       if (char !== openQuote) {
@@ -173,7 +136,7 @@ function Parser(pos: Number, input: string) {
       return false;
     });
 
-    console.assert(this.consumeChar() === openQuote, "close quote error");
+    assert(this.consumeChar() === openQuote, "close quote error");
 
     return value;
   };
@@ -216,7 +179,7 @@ function Parser(pos: Number, input: string) {
   };
 }
 
-const html = `<html><body><h1>Title</h1><div id="main" class="test"><p>Hello<em>world</em>!</p></div></body></html>`;
+const html = `<html id="root" class="test"><body><h1>Title</h1><div id="main" class="test"><p>Hello<em>world</em>!</p></div></body></html>`;
 const parser = new Parser(0, html);
 
 console.log(parser.parse());
