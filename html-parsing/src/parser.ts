@@ -1,7 +1,7 @@
 import { createElement, createText, WangdoNodeType } from "./dom";
 import assert from "node:assert";
 
-function Parser(pos: Number, input: string) {
+export default function Parser(pos: Number, input: string) {
   this.pos = pos;
   this.input = input;
 

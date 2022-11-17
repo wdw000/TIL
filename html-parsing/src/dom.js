@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.createElement = exports.createText = void 0;
 function WangdoNode(param) {
     this.children = param.children;
@@ -16,7 +16,7 @@ exports.createText = createText;
 function createElement(name, attrs, children) {
     return new WangdoNode({
         children: children,
-        nodeType: new ElementData(name, attrs),
+        nodeType: new ElementData(name, attrs)
     });
 }
 exports.createElement = createElement;
