@@ -20,27 +20,26 @@ https://school.programmers.co.kr/learn/courses/30/lessons/136798?language=javasc
 1부터 10까지의 약수의 개수는 순서대로 [1, 2, 2, 3, 2, 4, 2, 4, 3, 4]개입니다. 공격력의 제한수치가 3이기 때문에, 6, 8, 10번 기사는 공격력이 2인 무기를 구매합니다. 따라서 해당 수들의 합인 21을 return 합니다.
 */
 function solution(number, limit, power) {
-    var result = 0;
-    for (var i = 1; i <= number; i++) {
-        var attack = countDivisol(i);
-        if (attack > limit) {
-            result += power;
-        }
-        else {
-            result += attack;
-        }
+  var result = 0;
+  for (var i = 1; i <= number; i++) {
+    var attack = countDivisol(i);
+    if (attack > limit) {
+      result += power;
+    } else {
+      result += attack;
     }
-    return result;
+  }
+  return result;
 }
 function countDivisol(number) {
-    var cnt = 0;
-    for (var i = 1; i <= Math.sqrt(number); i++) {
-        if (number % i === 0) {
-            cnt++;
-            if (number / i === 0) {
-                cnt++;
-            }
-        }
+  var cnt = 0;
+  for (var i = 1; i <= Math.sqrt(number); i++) {
+    if (number % i === 0) {
+      cnt++;
+      if (i !== number / i) {
+        cnt++;
+      }
     }
-    return cnt;
+  }
+  return cnt;
 }

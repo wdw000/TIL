@@ -42,7 +42,7 @@ function countDivisol(number: number) {
   for (let i = 1; i <= Math.sqrt(number); i++) {
     if (number % i === 0) {
       cnt++;
-      if (number / i === 0) {
+      if (i !== number / i) {
         cnt++;
       }
     }
